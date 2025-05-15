@@ -1,0 +1,27 @@
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+img = cv2.imread('cat.jpeg', cv2.IMREAD_GRAYSCALE)
+
+kernel = np.ones((5, 5), np.uint8)
+
+eroded = cv2.erode(img, kernel, iterations=1)
+erosion_diff = cv2.absdiff(img, eroded)
+
+dilated = cv2.dilate(img, kernel, iterations=1)
+dilation_diff = cv2.absdiff(dilated, img)
+
+titles = ['Original Image', 'Eroded Image', 'Original - Eroded',
+          'Dilated Image', 'Dilated - Original']
+images = [img, eroded, erosion_diff, dilated, dilation_diff]
+
+plt.figure(figsize=(12, 8))
+for i in range(5):
+    plt.subplot(2, 3, i + 1)
+    plt.imshow(images[i], cmap='gray')
+    plt.title(titles[i])
+    plt.axis('off')
+
+plt.tight_layout()
+plt.show()
