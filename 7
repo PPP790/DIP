@@ -1,0 +1,47 @@
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+from skimage.feature import local_binary_pattern
+
+img = cv2.imread('cat.jpeg')
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+edges = cv2.Canny(gray, 100, 200)
+
+radius = 1
+n_points = 8 * radius
+lbp = local_binary_pattern(gray, n_points, radius, method='uniform')
+
+b, g, r = cv2.split(img)
+
+hist_b = cv2.calcHist([b], [0], None, [256], [0, 256])
+hist_g = cv2.calcHist([g], [0], None, [256], [0, 256])
+hist_r = cv2.calcHist([r], [0], None, [256], [0, 256])
+
+plt.figure(figsize=(14, 8))
+
+plt.subplot(2, 3, 1)
+plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+plt.title('Original Image')
+plt.axis('off')
+
+plt.subplot(2, 3, 2)
+plt.imshow(edges, cmap='gray')
+plt.title('Edge Detection (Canny)')
+plt.axis('off')
+
+plt.subplot(2, 3, 3)
+plt.imshow(lbp, cmap='gray')
+plt.title('Local Binary Pattern (LBP)')
+plt.axis('off')
+
+plt.subplot(2, 1, 2)
+plt.plot(hist_r, color='red')
+plt.plot(hist_g, color='green')
+plt.plot(hist_b, color='blue')
+plt.title('Color Histogram')
+plt.xlabel('Pixel Intensity')
+plt.ylabel('Frequency')
+
+plt.tight_layout()
+plt.show()
